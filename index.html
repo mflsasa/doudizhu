@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./css.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="zuozi">
+        <div id="tou" class="flex-box"></div>
+        <div class="user-box">
+            <div id="user0" class="flex-box user-hand">
+                <!-- <div class="choose" onclick="next('qiang', 0)">抢地主</div> -->
+            </div>
+            <div id="user1" class="flex-box user-hand">
+                <!-- <div class="choose" onclick="next('qiang', 1)">抢地主</div> -->
+            </div>
+            <div id="user2" class="flex-box user-hand" onmousedown="chooseEvent(this, event)">
+                <!-- <div class="choose" onclick="next('qiang', 2)">抢地主</div> -->
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { randomCard, cardHtml, sortBy, initCard, QIANGDIZHU, chooseEvent } from './tool.js'
+        const compare = () => {
+
+        }
+        // const c1 = ['红桃,♥', '方块,♦', '梅花,♣', '黑桃,♠']
+        const { tou, plays } = initCard()
+        tou.forEach(i => document.getElementById('tou').appendChild(cardHtml(i)))
+        // const setCard = [] // 发牌器
+        // 发完后排序渲染
+        plays.forEach((t, i) => {
+            t.sort(sortBy('value'))
+            t = t.map(c => function () { document.getElementById('user' + i).appendChild(cardHtml(c)) })
+            let num = 0
+            // 发牌器
+            const timer = setInterval(() => {
+                t[num] && t[num]()
+                num++
+                if (t.length < num) clearInterval(timer)
+            })
+        })
+        // console.log(setCard)
+        function next(type, val) {
+            console.log(type, val)
+            const eventList = {
+                qiang: (val) => QIANGDIZHU({ tou, plays }, val)
+            }
+            eventList[type] && eventList[type](val)
+        }
+        window.next = next
+        window.chooseEvent = chooseEvent
+    </script>
+</body>
+
+</html>
